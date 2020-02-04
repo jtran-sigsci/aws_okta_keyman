@@ -53,6 +53,7 @@ class Config:
         self.region = None
         self.duration = None
         self.console = None
+        self.arn = None
 
         if len(argv) > 1:
             if argv[1] == 'config':
@@ -287,6 +288,8 @@ class Config:
                                        'selected role..'
                                    ),
                                    default=False)
+        optional_args.add_argument('-arn', '--arn', type=str,
+                                   help='arn to be assumed')
 
     @staticmethod
     def read_yaml(filename, raise_on_error=False):

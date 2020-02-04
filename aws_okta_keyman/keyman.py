@@ -338,10 +338,20 @@ class Keyman:
         """If there's more than one role available from AWS present the user
         with a list to pick from
         """
-        self.log.warning('Multiple AWS roles found; please select one')
-        roles = session.available_roles()
-        header = [{'account': 'Account'}, {'role_name': 'Role'}]
-        self.role = self.selector_menu(roles, header)
+        if self.config.arn:
+            self.log.warning('arn specified: %s' % self.config.arn)
+            results = [i for i,x in enumerate(session.available_roles()) if x['arn'] == self.config.arn]
+            if len(results) == 0:
+                self.log.warning('arn returned no results')
+                sys.exit(results)
+            else:
+                self.role = results[0]
+        else:
+            self.log.warning('Multiple AWS roles found; please select one')
+            roles = session.available_roles()
+            header = [{'account': 'Account'}, {'role_name': 'Role'}]
+            self.role = self.selector_menu(roles, header)
+
         session.role = self.role
 
     def start_session(self):
